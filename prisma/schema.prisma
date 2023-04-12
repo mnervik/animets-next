@@ -129,7 +129,7 @@ model Video {
   duration       Int       @default(0)
   date           DateTime  @default(now()) @db.DateTime(0)
   date_published DateTime? @db.Date
-  cover          String?
+  cover          String?   @db.VarChar(10)
 
   bookmarks Bookmark[]
   stars     VideoStars[]
