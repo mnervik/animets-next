@@ -227,7 +227,7 @@ const VideoPlayer = ({ video, bookmarks, categories, stars, update, plyrRef, mod
               id: data.id,
               name: category.name,
               start: time,
-              starID: 0,
+              starId: 0,
               attributes: typeof data.attributes !== 'undefined' ? data.attributes : [],
               active: false
             }
@@ -252,7 +252,6 @@ const VideoPlayer = ({ video, bookmarks, categories, stars, update, plyrRef, mod
           component={MenuItem}
           icon='add'
           text='Add Bookmark'
-          disabled={video.noStar}
           onClick={() => {
             modal.handler(
               'Add Bookmark',

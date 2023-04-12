@@ -47,7 +47,7 @@ const Timeline = ({
   const bookmarksArr: HTMLElement[] = []
 
   const isActive = (bookmark: Bookmark) => bookmark.active
-  const hasStar = (bookmark: Bookmark) => bookmark.starID > 0
+  const hasStar = (bookmark: Bookmark) => bookmark.starId > 0
   const attributesFromStar = (starID: number) => stars.filter(star => star.id === starID)[0]?.attributes ?? []
   const isStarAttribute = (starID: number, attributeID: number) => {
     return attributesFromStar(starID).some(attr => attr.id === attributeID)
@@ -111,7 +111,7 @@ const Timeline = ({
       update(
         bookmarks.map(bookmarkItem => {
           if (bookmarkItem.id === bookmark.id) {
-            const starID = bookmark.starID
+            const starID = bookmark.starId
 
             if (starID !== 0) {
               const starAttribute = attributesFromStar(starID)
@@ -138,7 +138,7 @@ const Timeline = ({
       update(
         bookmarks.map(item => {
           if (item.id === bookmark.id) {
-            const attributes = attributesFromStar(bookmark.starID)
+            const attributes = attributesFromStar(bookmark.starId)
 
             if (item.attributes.length > attributes.length) {
               // Bookmark have at least 1 attribute not from star
@@ -153,7 +153,7 @@ const Timeline = ({
             }
 
             // RESET starID
-            item.starID = 0
+            item.starId = 0
           }
 
           return item
@@ -196,7 +196,7 @@ const Timeline = ({
   return (
     <div className='col-12' id={styles.timeline}>
       {bookmarks.map((bookmark, idx) => {
-        const tooltip = bookmark.starID > 0 || bookmark.attributes.length > 0
+        const tooltip = bookmark.starId > 0 || bookmark.attributes.length > 0
 
         return (
           <Fragment key={bookmark.id}>
@@ -219,21 +219,21 @@ const Timeline = ({
 
                 {tooltip && (
                   <ReactTooltip id={`bookmark-info-${bookmark.id}`} effect='solid'>
-                    {bookmark.starID !== 0 && (
+                    {bookmark.starId !== 0 && (
                       <Image
-                        src={`${serverConfig.api}/star/${bookmark.starID}/image`}
-                        data-star-id={bookmark.starID}
+                        src={`${serverConfig.api}/star/${bookmark.starId}/image`}
+                        data-star-id={bookmark.starId}
                         width={200}
                         height={275}
-                        missing={stars.find(s => s.id === bookmark.starID)?.image === null}
+                        missing={stars.find(s => s.id === bookmark.starId)?.image === null}
                         alt='star'
                       />
                     )}
 
                     {bookmark.attributes
                       .sort((a, b) => {
-                        if (isStarAttribute(bookmark.starID, a.id)) return -1
-                        else if (isStarAttribute(bookmark.starID, b.id)) return 1
+                        if (isStarAttribute(bookmark.starId, a.id)) return -1
+                        else if (isStarAttribute(bookmark.starId, b.id)) return 1
 
                         return a.name.localeCompare(b.name)
                       })
@@ -259,7 +259,7 @@ const Timeline = ({
                 component={MenuItem}
                 icon='add'
                 text='Add Star'
-                disabled={bookmark.starID !== 0 || stars.length === 0}
+                disabled={bookmark.starId !== 0 || stars.length === 0}
                 onClick={() => setStarEvent(true, bookmark)}
               />
 
@@ -267,7 +267,7 @@ const Timeline = ({
                 component={MenuItem}
                 icon='delete'
                 text='Remove Star'
-                disabled={bookmark.starID === 0}
+                disabled={bookmark.starId === 0}
                 onClick={() => removeStar(bookmark)}
               />
 
@@ -310,14 +310,14 @@ const Timeline = ({
                 component={MenuItem}
                 icon='delete'
                 text='Remove Attribute'
-                disabled={attributesFromStar(bookmark.starID).length >= bookmark.attributes.length}
+                disabled={attributesFromStar(bookmark.starId).length >= bookmark.attributes.length}
                 onClick={() => {
                   onModal(
                     'Remove Attribute',
                     bookmark.attributes
                       .filter(attribute => {
                         // only show attribute, if not from star
-                        if (isStarAttribute(bookmark.starID, attribute.id)) return null
+                        if (isStarAttribute(bookmark.starId, attribute.id)) return null
 
                         return attribute
                       })
@@ -343,37 +343,8 @@ const Timeline = ({
                 component={MenuItem}
                 icon='delete'
                 text='Clear Attributes'
-                disabled={attributesFromStar(bookmark.starID).length >= bookmark.attributes.length}
+                disabled={attributesFromStar(bookmark.starId).length >= bookmark.attributes.length}
                 onClick={() => clearAttributes(bookmark)}
-              />
-
-              <hr />
-
-              <IconWithText
-                component={MenuItem}
-                icon='add'
-                text='Set Outfit'
-                onClick={() => {
-                  onModal(
-                    'Set Outfit',
-                    outfits
-                      .filter(outfit => outfit.name !== bookmark.outfit)
-                      .map(outfit => (
-                        <Button
-                          key={outfit.id}
-                          variant='outlined'
-                          color='primary'
-                          onClick={() => {
-                            onModal()
-                            setOutfit(outfit, bookmark)
-                          }}
-                        >
-                          {outfit.name}
-                        </Button>
-                      )),
-                    true
-                  )
-                }}
               />
 
               <hr />
