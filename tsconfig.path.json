@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@service": ["./src/service"],
+      "@components/*": ["./src/components/*"],
+      "@config": ["./src/config"],
+      "@pages/*": ["./src/pages/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils/server/*": ["./src/utils/client/*"],
+      "@utils/client/*": ["./src/utils/client/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@interfaces": ["./src/interfaces"],
+      "@/*": ["./src/*"]
+    }
+  }
+}
