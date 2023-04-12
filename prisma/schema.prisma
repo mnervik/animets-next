@@ -8,9 +8,132 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Video {
+model Attribute {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  videoOnly Boolean @default(false)
+  starOnly  Boolean @default(false)
+
+  stars     StarAttributes[]
+  bookmarks BookmarkAttributes[]
+
+  @@map("attribute")
+}
+
+model BookmarkAttributes {
+  attributeId Int
+  bookmarkId  Int
+
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  bookmark  Bookmark  @relation(fields: [bookmarkId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([attributeId, bookmarkId])
+  @@index([attributeId])
+  @@index([bookmarkId])
+  @@map("bookmark_attributes")
+}
+
+model Bookmark {
+  id    Int @id @default(autoincrement())
+  start Int @default(0)
+
+  videoId    Int
+  categoryId Int
+  starId     Int?
+
+  video      Video                @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category   Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  star       Star?                @relation(fields: [starId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  attributes BookmarkAttributes[]
+
+  @@index([videoId])
+  @@index([categoryId])
+  @@index([starId])
+  @@map("bookmark")
+}
+
+model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
+
+  bookmarks Bookmark[]
+
+  @@map("category")
+}
+
+model Plays {
+  id   Int      @id @default(autoincrement())
+  time DateTime @default(now()) @db.DateTime(0)
+
+  videoId Int
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([videoId])
+  @@map("plays")
+}
+
+model StarAttributes {
+  attributeId Int
+  starId      Int
+
+  star      Star      @relation(fields: [starId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([attributeId, starId])
+  @@index([starId])
+  @@index([attributeId])
+  @@map("star_attributes")
+}
+
+model Star {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  image     String?
+  haircolor String?
+
+  gender     Gender           @default(FEMALE)
+  attributes StarAttributes[]
+  Bookmark   Bookmark[]
+  videos     VideoStars[]
+
+  @@map("star")
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+model VideoStars {
+  starId  Int
+  videoId Int
+
+  star  Star  @relation(fields: [starId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([starId, videoId])
+  @@index([videoId])
+  @@index([starId])
+  @@map("video_stars")
+}
+
+model Video {
+  id             Int       @id @default(autoincrement())
+  name           String    @unique
+  episode        Int       @default(0)
+  path           String    @unique
+  franchise      String
+  studio         String?
+  height         Int       @default(0)
+  duration       Int       @default(0)
+  date           DateTime  @default(now()) @db.DateTime(0)
+  date_published DateTime? @db.Date
+  cover          String?
+
+  bookmarks Bookmark[]
+  stars     VideoStars[]
+  plays     Plays[]
 
   @@map("video")
 }

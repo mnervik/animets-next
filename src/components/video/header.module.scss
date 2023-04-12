@@ -1,0 +1,18 @@
+$spacing: 5px;
+
+#header {
+  margin-bottom: 15px;
+
+  button {
+    margin-left: 15px;
+    color: black;
+
+    svg {
+      margin-right: $spacing;
+
+      & + .no-label {
+        margin-left: -$spacing;
+      }
+    }
+  }
+}
